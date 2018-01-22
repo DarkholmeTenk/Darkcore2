@@ -1,9 +1,10 @@
 package io.darkcraft.darkcore.nbt.mapper;
 
 import io.darkcraft.darkcore.nbt.annot.NBTView;
+import io.darkcraft.darkcore.nbt.impl.wrappers.PolymorphicWrapper;
 
 /**
- * An initialized mapper which should be capable of producing readers and writers.<p/>
+ * An initialised mapper which should be capable of producing readers and writers.<p/>
  *
  * May have a view class as described in {@link NBTView} or may be pure.
  *
@@ -20,4 +21,11 @@ public interface NBTMapper
 	public <T> NBTWriter<T> getWriter(Class<T> clazz);
 
 	public <T> NBTReader<T> getReader(Class<T> clazz);
+
+	public <T> NBTFiller<T> getFiller(Class<T> clazz);
+
+	public default PolymorphicWrapper getPolymorphic()
+	{
+		return new PolymorphicWrapper(this);
+	}
 }

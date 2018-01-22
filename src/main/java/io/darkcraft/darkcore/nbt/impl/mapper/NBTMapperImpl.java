@@ -4,6 +4,7 @@ import static io.darkcraft.darkcore.nbt.util.ClassHelper.wrapPrimitive;
 
 import java.util.Map;
 
+import io.darkcraft.darkcore.nbt.mapper.NBTFiller;
 import io.darkcraft.darkcore.nbt.mapper.NBTMapper;
 import io.darkcraft.darkcore.nbt.mapper.NBTReader;
 import io.darkcraft.darkcore.nbt.mapper.NBTWriter;
@@ -29,6 +30,15 @@ public class NBTMapperImpl implements NBTMapper
 	public <T> NBTReader<T> getReader(Class<T> clazz)
 	{
 		return (NBTReader<T>) globalReaders.get(wrapPrimitive(clazz));
+	}
+
+	@Override
+	public <T> NBTFiller<T> getFiller(Class<T> clazz)
+	{
+		NBTReader<T> reader = getReader(clazz);
+		if(reader instanceof NBTFiller)
+			return (NBTFiller<T>) reader;
+		return null;
 	}
 
 }
