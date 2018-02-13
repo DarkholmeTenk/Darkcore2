@@ -1,16 +1,11 @@
-package io.darkcraft.darkcore.nbt.impl.wrappers.collection;
+package io.darkcraft.darkcore.nbt.impl.wrappers.map;
 
-final class CollectionConstants
+final class MapConstants
 {
-	private CollectionConstants() {}
+	private MapConstants() {}
 	static final String SIZE_KEY = "S";
 	static final String MAP_KEY_PREFIX = "K";
 	static final String MAP_VAL_PREFIX = "V";
-
-	static String getKey(int i)
-	{
-		return String.valueOf(i);
-	}
 
 	static String getMapKeyKey(int i)
 	{

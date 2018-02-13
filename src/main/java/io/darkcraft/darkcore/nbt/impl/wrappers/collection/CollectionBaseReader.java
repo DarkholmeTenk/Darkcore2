@@ -12,9 +12,10 @@ public class CollectionBaseReader<T, U extends Collection<T>> implements NBTRead
 	private final NBTReader<T> reader;
 	private final Supplier<U> supplier;
 
-	CollectionBaseReader(NBTReader<T> reader, Supplier<U> supplier)
+	public CollectionBaseReader(NBTReader<T> reader, Supplier<U> supplier)
 	{
 		this.reader = reader;
+		this.supplier = supplier;
 	}
 
 	@Override

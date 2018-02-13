@@ -4,36 +4,26 @@ import java.util.UUID;
 
 import net.minecraft.nbt.NBTTagCompound;
 
+import io.darkcraft.darkcore.nbt.impl.mapper.ClassPartialMapper;
 import io.darkcraft.darkcore.nbt.util.NBTHelper;
 
 public class PrimitiveWrappers
 {
 	public static NBTHelper addWrappers(NBTHelper nbtHelper)
 	{
-		nbtHelper.addGlobalWriter(Integer.class, NBTTagCompound::setInteger);
-		nbtHelper.addGlobalWriter(Long.class, NBTTagCompound::setLong);
-		nbtHelper.addGlobalWriter(Short.class, NBTTagCompound::setShort);
-		nbtHelper.addGlobalWriter(String.class, NBTTagCompound::setString);
-		nbtHelper.addGlobalWriter(Double.class, NBTTagCompound::setDouble);
-		nbtHelper.addGlobalWriter(Float.class, NBTTagCompound::setFloat);
-		nbtHelper.addGlobalWriter(Boolean.class, NBTTagCompound::setBoolean);
-		nbtHelper.addGlobalWriter(Byte.class, NBTTagCompound::setByte);
-		nbtHelper.addGlobalWriter(byte[].class, NBTTagCompound::setByteArray);
-		nbtHelper.addGlobalWriter(int[].class, NBTTagCompound::setIntArray);
-		nbtHelper.addGlobalWriter(UUID.class, NBTTagCompound::setUniqueId);
-
-		nbtHelper.addGlobalReader(Integer.class, NBTTagCompound::getInteger);
-		nbtHelper.addGlobalReader(Long.class, NBTTagCompound::getLong);
-		nbtHelper.addGlobalReader(Short.class, NBTTagCompound::getShort);
-		nbtHelper.addGlobalReader(String.class, NBTTagCompound::getString);
-		nbtHelper.addGlobalReader(Double.class, NBTTagCompound::getDouble);
-		nbtHelper.addGlobalReader(Float.class, NBTTagCompound::getFloat);
-		nbtHelper.addGlobalReader(Boolean.class, NBTTagCompound::getBoolean);
-		nbtHelper.addGlobalReader(Byte.class, NBTTagCompound::getByte);
-		nbtHelper.addGlobalReader(byte[].class, NBTTagCompound::getByteArray);
-		nbtHelper.addGlobalReader(int[].class, NBTTagCompound::getIntArray);
-		nbtHelper.addGlobalReader(UUID.class, NBTTagCompound::getUniqueId);
-
+		ClassPartialMapper classMapper = new ClassPartialMapper();
+		classMapper.register(Integer.class, NBTTagCompound::getInteger, NBTTagCompound::setInteger);
+		classMapper.register(Long.class, NBTTagCompound::getLong, NBTTagCompound::setLong);
+		classMapper.register(Short.class, NBTTagCompound::getShort, NBTTagCompound::setShort);
+		classMapper.register(String.class, NBTTagCompound::getString, NBTTagCompound::setString);
+		classMapper.register(Double.class, NBTTagCompound::getDouble, NBTTagCompound::setDouble);
+		classMapper.register(Float.class, NBTTagCompound::getFloat, NBTTagCompound::setFloat);
+		classMapper.register(Boolean.class, NBTTagCompound::getBoolean, NBTTagCompound::setBoolean);
+		classMapper.register(Byte.class, NBTTagCompound::getByte, NBTTagCompound::setByte);
+		classMapper.register(byte[].class, NBTTagCompound::getByteArray, NBTTagCompound::setByteArray);
+		classMapper.register(int[].class, NBTTagCompound::getIntArray, NBTTagCompound::setIntArray);
+		classMapper.register(UUID.class, NBTTagCompound::getUniqueId, NBTTagCompound::setUniqueId);
+		nbtHelper.addPartialMapper(classMapper);
 		return nbtHelper;
 	}
 }

@@ -1,7 +1,12 @@
 package io.darkcraft.darkcore.nbt.mapper;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
 import io.darkcraft.darkcore.nbt.annot.NBTView;
 import io.darkcraft.darkcore.nbt.impl.wrappers.PolymorphicWrapper;
+import io.darkcraft.darkcore.nbt.impl.wrappers.collection.CollectionBaseReader;
 
 /**
  * An initialised mapper which should be capable of producing readers and writers.<p/>
@@ -15,17 +20,37 @@ public interface NBTMapper
 {
 	/**
 	 * Returns a writer for the specified class
-	 * @param clazz the class to produce a writer capable of serializing
+	 * @param type the class to produce a writer capable of serializing
 	 * @return a writer for writing data to a tag
 	 */
-	public <T> NBTWriter<T> getWriter(Class<T> clazz);
+	public <T> NBTWriter<T> getWriter(Type type);
 
-	public <T> NBTReader<T> getReader(Class<T> clazz);
+	public <T> NBTReader<T> getReader(Type clazz);
 
-	public <T> NBTFiller<T> getFiller(Class<T> clazz);
+	public <T> NBTFiller<T> getFiller(Type clazz);
+
+	public default <T> NBTWriter<T> getWriter(Class<T> clazz)
+	{
+		return this.<T>getWriter(clazz);
+	}
+
+	public default <T> NBTReader<T> getReader(Class<T> clazz)
+	{
+		return this.<T>getReader(clazz);
+	}
+
+	public default <T> NBTFiller<T> getFiller(Class<T> clazz)
+	{
+		return this.<T>getFiller(clazz);
+	}
 
 	public default PolymorphicWrapper getPolymorphic()
 	{
 		return new PolymorphicWrapper(this);
+	}
+
+	public default <T> CollectionBaseReader<T, List<T>> getListReader(Class<T> clazz)
+	{
+		return new CollectionBaseReader<>(getReader(clazz), ArrayList::new);
 	}
 }

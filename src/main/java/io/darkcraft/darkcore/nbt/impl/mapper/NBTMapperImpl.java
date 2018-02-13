@@ -1,44 +1,48 @@
 package io.darkcraft.darkcore.nbt.impl.mapper;
 
-import static io.darkcraft.darkcore.nbt.util.ClassHelper.wrapPrimitive;
-
-import java.util.Map;
+import java.lang.reflect.Type;
+import java.util.List;
 
 import io.darkcraft.darkcore.nbt.mapper.NBTFiller;
 import io.darkcraft.darkcore.nbt.mapper.NBTMapper;
 import io.darkcraft.darkcore.nbt.mapper.NBTReader;
 import io.darkcraft.darkcore.nbt.mapper.NBTWriter;
+import io.darkcraft.darkcore.nbt.mapper.PartialMapper;
 
 public class NBTMapperImpl implements NBTMapper
 {
-	private final Map<Class<?>, NBTWriter<?>> globalWriters;
-	private final Map<Class<?>, NBTReader<?>> globalReaders;
+	private final List<PartialMapper> partialMappers;
 
-	public NBTMapperImpl(Map<Class<?>, NBTWriter<?>> globalWriters, Map<Class<?>, NBTReader<?>> globalReaders)
+	public NBTMapperImpl(List<PartialMapper> partialMappers)
 	{
-		this.globalReaders = globalReaders;
-		this.globalWriters = globalWriters;
+		this.partialMappers = partialMappers;
 	}
 
 	@Override
-	public <T> NBTWriter<T> getWriter(Class<T> clazz)
+	public <T> NBTWriter<T> getWriter(Type type)
 	{
-		return (NBTWriter<T>) globalWriters.get(wrapPrimitive(clazz));
+		for(PartialMapper mapper : partialMappers)
+			if(mapper.canHandle(type))
+				return mapper.getWriter(this, type);
+		throw new RuntimeException("No mapper");
 	}
 
 	@Override
-	public <T> NBTReader<T> getReader(Class<T> clazz)
+	public <T> NBTReader<T> getReader(Type type)
 	{
-		return (NBTReader<T>) globalReaders.get(wrapPrimitive(clazz));
+		for(PartialMapper mapper : partialMappers)
+			if(mapper.canHandle(type))
+				return mapper.getReader(this, type);
+		throw new RuntimeException("No mapper");
 	}
 
 	@Override
-	public <T> NBTFiller<T> getFiller(Class<T> clazz)
+	public <T> NBTFiller<T> getFiller(Type type)
 	{
-		NBTReader<T> reader = getReader(clazz);
-		if(reader instanceof NBTFiller)
-			return (NBTFiller<T>) reader;
-		return null;
+		for(PartialMapper mapper : partialMappers)
+			if(mapper.canHandle(type))
+				return mapper.getFiller(this, type);
+		throw new RuntimeException("No mapper");
 	}
 
 }

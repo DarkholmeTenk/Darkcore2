@@ -29,6 +29,7 @@ public class CollectionWriter<T> implements NBTWriter<Collection<T>>
 				writer.writeToNBT(list, getKey(i), t);
 			i++;
 		}
+		nbt.setTag(key, list);
 	}
 
 }

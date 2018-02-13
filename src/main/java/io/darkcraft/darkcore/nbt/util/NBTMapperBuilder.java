@@ -1,26 +1,22 @@
 package io.darkcraft.darkcore.nbt.util;
 
-import java.util.Map;
+import java.util.List;
 
 import io.darkcraft.darkcore.nbt.impl.mapper.NBTMapperImpl;
 import io.darkcraft.darkcore.nbt.impl.mapper.NBTMapperViewImpl;
 import io.darkcraft.darkcore.nbt.mapper.NBTMapper;
-import io.darkcraft.darkcore.nbt.mapper.NBTReader;
-import io.darkcraft.darkcore.nbt.mapper.NBTWriter;
+import io.darkcraft.darkcore.nbt.mapper.PartialMapper;
 
 public class NBTMapperBuilder
 {
-	private final Map<Class<?>, NBTWriter<?>> globalWriters;
-	private final Map<Class<?>, NBTReader<?>> globalReaders;
+	private final List<PartialMapper> partialMappers;
 
 	private Class<?> viewClazz;
 
 	NBTMapperBuilder(
-			Map<Class<?>, NBTWriter<?>> globalWriters,
-			Map<Class<?>, NBTReader<?>> globalReaders)
+			List<PartialMapper> partialMappers)
 	{
-		this.globalWriters = globalWriters;
-		this.globalReaders = globalReaders;
+		this.partialMappers = partialMappers;
 	}
 
 	public NBTMapperBuilder withView(Class<?> viewClazz)
@@ -32,8 +28,8 @@ public class NBTMapperBuilder
 	public NBTMapper build()
 	{
 		if(viewClazz == null)
-			return new NBTMapperImpl(globalWriters, globalReaders);
+			return new NBTMapperImpl(partialMappers);
 		else
-			return new NBTMapperViewImpl(globalWriters, globalReaders, viewClazz);
+			return new NBTMapperViewImpl(partialMappers, viewClazz);
 	}
 }

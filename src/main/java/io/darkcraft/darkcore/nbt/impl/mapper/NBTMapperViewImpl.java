@@ -1,17 +1,16 @@
 package io.darkcraft.darkcore.nbt.impl.mapper;
 
-import java.util.Map;
+import java.util.List;
 
-import io.darkcraft.darkcore.nbt.mapper.NBTReader;
-import io.darkcraft.darkcore.nbt.mapper.NBTWriter;
+import io.darkcraft.darkcore.nbt.mapper.PartialMapper;
 
 public class NBTMapperViewImpl extends NBTMapperImpl
 {
 
-	public NBTMapperViewImpl(Map<Class<?>, NBTWriter<?>> globalWriters, Map<Class<?>, NBTReader<?>> globalReaders,
+	public NBTMapperViewImpl(List<PartialMapper> partialMappers,
 			Class<?> viewClazz)
 	{
-		super(globalWriters, globalReaders);
+		super(partialMappers);
 	}
 
 }
