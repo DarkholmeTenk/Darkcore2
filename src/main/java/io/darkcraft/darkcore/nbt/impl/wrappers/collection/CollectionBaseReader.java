@@ -27,7 +27,7 @@ public class CollectionBaseReader<T, U extends Collection<T>> implements NBTRead
 		for(int i = 0; i < size; i++)
 		{
 			String key = CollectionConstants.getKey(i);
-			if(nbt.hasKey(key))
+			if(list.hasKey(key))
 				u.add(reader.readFromNBT(list, key));
 			else
 				u.add(null);

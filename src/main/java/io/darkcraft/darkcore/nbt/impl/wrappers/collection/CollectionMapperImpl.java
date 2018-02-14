@@ -2,7 +2,16 @@ package io.darkcraft.darkcore.nbt.impl.wrappers.collection;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.function.Supplier;
 
 import io.darkcraft.darkcore.nbt.mapper.NBTFiller;
 import io.darkcraft.darkcore.nbt.mapper.NBTMapper;
@@ -38,11 +47,28 @@ public class CollectionMapperImpl implements PartialMapper
 		return (NBTWriter<T>) new CollectionWriter<>(childWriter);
 	}
 
+	private <T> Supplier<Collection<T>> getSupplier(ParameterizedType pType)
+	{
+		Type raw = pType.getRawType();
+		if((raw == Collection.class) || (raw == List.class) || (raw == ArrayList.class))
+			return ArrayList::new;
+		if((raw == Queue.class) || (raw == Deque.class) || (raw == LinkedList.class))
+			return LinkedList::new;
+		if((raw == Set.class) || (raw == HashSet.class))
+			return HashSet::new;
+		if(raw == TreeSet.class)
+			return TreeSet::new;
+
+		throw new IllegalStateException("Unable to produce supplier for " + pType);
+	}
+
 	@Override
 	public <T> NBTReader<T> getReader(NBTMapper parent, Type type)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		ParameterizedType pType = (ParameterizedType) type;
+		Type child = pType.getActualTypeArguments()[0];
+		NBTReader<?> childReader = parent.getReader(child);
+		return (NBTReader<T>) new CollectionBaseReader<>(childReader, getSupplier(pType));
 	}
 
 	@Override

@@ -11,14 +11,4 @@ final class CollectionConstants
 	{
 		return String.valueOf(i);
 	}
-
-	static String getMapKeyKey(int i)
-	{
-		return MAP_KEY_PREFIX + i;
-	}
-
-	static String getMapValKey(int i)
-	{
-		return MAP_VAL_PREFIX + i;
-	}
 }
