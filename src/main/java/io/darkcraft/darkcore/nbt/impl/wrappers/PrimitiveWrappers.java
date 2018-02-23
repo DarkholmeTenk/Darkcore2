@@ -5,25 +5,21 @@ import java.util.UUID;
 import net.minecraft.nbt.NBTTagCompound;
 
 import io.darkcraft.darkcore.nbt.impl.mapper.helpers.ClassPartialMapper;
-import io.darkcraft.darkcore.nbt.util.NBTHelper;
+import io.darkcraft.darkcore.nbt.mapper.PartialMapper;
 
 public class PrimitiveWrappers
 {
-	public static NBTHelper addWrappers(NBTHelper nbtHelper)
-	{
-		ClassPartialMapper classMapper = new ClassPartialMapper();
-		classMapper.register(Integer.class, NBTTagCompound::getInteger, NBTTagCompound::setInteger);
-		classMapper.register(Long.class, NBTTagCompound::getLong, NBTTagCompound::setLong);
-		classMapper.register(Short.class, NBTTagCompound::getShort, NBTTagCompound::setShort);
-		classMapper.register(String.class, NBTTagCompound::getString, NBTTagCompound::setString);
-		classMapper.register(Double.class, NBTTagCompound::getDouble, NBTTagCompound::setDouble);
-		classMapper.register(Float.class, NBTTagCompound::getFloat, NBTTagCompound::setFloat);
-		classMapper.register(Boolean.class, NBTTagCompound::getBoolean, NBTTagCompound::setBoolean);
-		classMapper.register(Byte.class, NBTTagCompound::getByte, NBTTagCompound::setByte);
-		classMapper.register(byte[].class, NBTTagCompound::getByteArray, NBTTagCompound::setByteArray);
-		classMapper.register(int[].class, NBTTagCompound::getIntArray, NBTTagCompound::setIntArray);
-		classMapper.register(UUID.class, NBTTagCompound::getUniqueId, NBTTagCompound::setUniqueId);
-		nbtHelper.addPartialMapper(classMapper);
-		return nbtHelper;
-	}
+	public static final PartialMapper PARTIAL = new ClassPartialMapper()
+			.register(Integer.class, NBTTagCompound::getInteger, NBTTagCompound::setInteger)
+			.register(Long.class, NBTTagCompound::getLong, NBTTagCompound::setLong)
+			.register(Short.class, NBTTagCompound::getShort, NBTTagCompound::setShort)
+			.register(String.class, NBTTagCompound::getString, NBTTagCompound::setString)
+			.register(Double.class, NBTTagCompound::getDouble, NBTTagCompound::setDouble)
+			.register(Float.class, NBTTagCompound::getFloat, NBTTagCompound::setFloat)
+			.register(Boolean.class, NBTTagCompound::getBoolean, NBTTagCompound::setBoolean)
+			.register(Byte.class, NBTTagCompound::getByte, NBTTagCompound::setByte)
+			.register(byte[].class, NBTTagCompound::getByteArray, NBTTagCompound::setByteArray)
+			.register(int[].class, NBTTagCompound::getIntArray, NBTTagCompound::setIntArray)
+			.register(UUID.class, NBTTagCompound::getUniqueId, NBTTagCompound::setUniqueId)
+			.finish();
 }

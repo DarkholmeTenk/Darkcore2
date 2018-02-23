@@ -1,5 +1,7 @@
 package io.darkcraft.darkcore.nbt.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.darkcraft.darkcore.nbt.impl.mapper.NBTMapperImpl;
@@ -16,7 +18,13 @@ public class NBTMapperBuilder
 	NBTMapperBuilder(
 			List<PartialMapper> partialMappers)
 	{
-		this.partialMappers = partialMappers;
+		this.partialMappers = new ArrayList<>(partialMappers);
+	}
+
+	public NBTMapperBuilder withPartialMappers(PartialMapper... mappers)
+	{
+		partialMappers.addAll(Arrays.asList(mappers));
+		return this;
 	}
 
 	public NBTMapperBuilder withView(Class<?> viewClazz)

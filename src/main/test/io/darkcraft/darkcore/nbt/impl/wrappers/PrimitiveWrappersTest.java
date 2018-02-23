@@ -14,7 +14,7 @@ import io.darkcraft.darkcore.nbt.util.NBTHelper;
 
 public class PrimitiveWrappersTest
 {
-	private final NBTMapper mapper = NBTHelper.INSTANCE.buildMapper().build();
+	private final NBTMapper mapper = NBTHelper.INSTANCE.buildDefaultMapper().build();
 	private NBTTagCompound nbt;
 
 	@Before

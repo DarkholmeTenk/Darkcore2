@@ -7,6 +7,7 @@ import java.util.List;
 import io.darkcraft.darkcore.nbt.annot.NBTView;
 import io.darkcraft.darkcore.nbt.impl.wrappers.PolymorphicWrapper;
 import io.darkcraft.darkcore.nbt.impl.wrappers.collection.CollectionBaseReader;
+import io.darkcraft.darkcore.nbt.util.TypeKey;
 
 /**
  * An initialised mapper which should be capable of producing readers and writers.<p/>
@@ -29,19 +30,19 @@ public interface NBTMapper
 
 	public <T> NBTFiller<T> getFiller(Type clazz);
 
-	public default <T> NBTWriter<T> getWriter(Class<T> clazz)
+	public default <T> NBTWriter<T> getWriter(TypeKey<T> key)
 	{
-		return this.<T>getWriter(clazz);
+		return this.<T>getWriter(key.getType());
 	}
 
-	public default <T> NBTReader<T> getReader(Class<T> clazz)
+	public default <T> NBTReader<T> getReader(TypeKey<T> key)
 	{
-		return this.<T>getReader(clazz);
+		return this.<T>getReader(key.getType());
 	}
 
-	public default <T> NBTFiller<T> getFiller(Class<T> clazz)
+	public default <T> NBTFiller<T> getFiller(TypeKey<T> key)
 	{
-		return this.<T>getFiller(clazz);
+		return this.<T>getFiller(key.getType());
 	}
 
 	public default PolymorphicWrapper getPolymorphic()

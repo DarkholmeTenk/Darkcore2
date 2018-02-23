@@ -10,24 +10,31 @@ import javax.annotation.Nullable;
 import net.minecraft.nbt.NBTTagCompound;
 
 import io.darkcraft.darkcore.nbt.impl.wrappers.PrimitiveWrappers;
+import io.darkcraft.darkcore.nbt.impl.wrappers.collection.CollectionMapperImpl;
+import io.darkcraft.darkcore.nbt.impl.wrappers.map.MapMapperImpl;
 import io.darkcraft.darkcore.nbt.mapper.NBTReader;
 import io.darkcraft.darkcore.nbt.mapper.NBTWriter;
 import io.darkcraft.darkcore.nbt.mapper.PartialMapper;
 
 public class NBTHelper
 {
-	public static NBTHelper INSTANCE = PrimitiveWrappers.addWrappers(new NBTHelper());
+	public static NBTHelper INSTANCE = new NBTHelper();
 
 	private final List<PartialMapper> partialMappers = new ArrayList<>();
 
-	NBTHelper(){};
+	NBTHelper()
+	{
+		partialMappers.add(PrimitiveWrappers.PARTIAL);
+		partialMappers.add(new CollectionMapperImpl());
+		partialMappers.add(new MapMapperImpl());
+	};
 
 	public <T> void addPartialMapper(PartialMapper mapper)
 	{
 		partialMappers.add(mapper);
 	}
 
-	public NBTMapperBuilder buildMapper()
+	public NBTMapperBuilder buildDefaultMapper()
 	{
 		return new NBTMapperBuilder(partialMappers);
 	}

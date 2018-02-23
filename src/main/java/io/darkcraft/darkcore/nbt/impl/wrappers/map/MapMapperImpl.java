@@ -37,7 +37,7 @@ public class MapMapperImpl extends ParameterizedTypeMapperHelper
 
 	private <K,V> Supplier<Map<K,V>> getSupplier(Type raw)
 	{
-		if(raw == HashMap.class)
+		if((raw == Map.class) || (raw == HashMap.class))
 			return HashMap::new;
 		if(raw == TreeMap.class)
 			return TreeMap::new;

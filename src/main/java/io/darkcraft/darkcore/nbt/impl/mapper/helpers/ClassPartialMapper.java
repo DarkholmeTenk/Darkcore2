@@ -18,18 +18,28 @@ public class ClassPartialMapper implements PartialMapper
 	private final Map<Class<?>, NBTReader<?>> readers = new HashMap<>();
 	private final Map<Class<?>, NBTWriter<?>> writers = new HashMap<>();
 	private final Map<Class<?>, NBTFiller<?>> fillers = new HashMap<>();
+	private boolean finished = false;
 
-	public <T> void register(Class<T> clazz, NBTReader<T> reader, NBTWriter<T> writer)
+	public <T> ClassPartialMapper register(Class<T> clazz, NBTReader<T> reader, NBTWriter<T> writer)
 	{
-		register(clazz, reader, writer, null);
+		return register(clazz, reader, writer, null);
 	}
 
-	public <T> void register(Class<T> clazz, NBTReader<T> reader, NBTWriter<T> writer, NBTFiller<T> filler)
+	public <T> ClassPartialMapper register(Class<T> clazz, NBTReader<T> reader, NBTWriter<T> writer, NBTFiller<T> filler)
 	{
+		if(finished)
+			throw new UnsupportedOperationException("Cannot add to finished mapper");
 		classes.add(clazz);
 		readers.put(clazz, reader);
 		writers.put(clazz, writer);
 		fillers.put(clazz, filler);
+		return this;
+	}
+
+	public ClassPartialMapper finish()
+	{
+		finished = true;
+		return this;
 	}
 
 	@Override

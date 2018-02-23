@@ -1,16 +1,13 @@
-package io.darkcraft.darkcore.nbt.impl.wrappers.collection;
+package io.darkcraft.darkcore.nbt.impl.wrappers.map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assume.assumeFalse;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,32 +22,28 @@ import io.darkcraft.darkcore.nbt.mapper.NBTMapper;
 import io.darkcraft.darkcore.nbt.util.NBTHelper;
 
 @RunWith(Parameterized.class)
-public class CollectionMapperTest
+public class MapMapperTest
 {
-	private static final CollectionMapperTestHelper helper = new CollectionMapperTestHelper();
+	private static final MapMapperTestHelper helper = new MapMapperTestHelper();
 
 	private NBTMapper mapper;
-	private CollectionMapperImpl collMapper;
+	private MapMapperImpl collMapper;
 	private NBTTagCompound nbt;
 
 	@Before
 	public void before()
 	{
 		mapper = NBTHelper.INSTANCE.buildDefaultMapper().build();
-		collMapper = new CollectionMapperImpl();
+		collMapper = new MapMapperImpl();
 		nbt = new NBTTagCompound();
 	}
 
-	@Parameters(name= "{0}")
-	public static Collection<Object[]> getParameters() throws NoSuchFieldException, SecurityException
+	@Parameters(name="{0}")
+	public static Collection<Object[]> getParameters()
 	{
 		return Arrays.asList(new Object[][] {
-			{ CollectionMapperTestHelper.getStrList(), helper.stringList, ArrayList.class },
-			{ CollectionMapperTestHelper.getStrSet(), helper.stringSet, HashSet.class },
-			{ CollectionMapperTestHelper.getStrHashSet(), helper.stringHashSet, HashSet.class },
-			{ CollectionMapperTestHelper.getIntList(), helper.intList, ArrayList.class },
-			{ CollectionMapperTestHelper.getIntArrList(), helper.intArrList, ArrayList.class },
-			{ CollectionMapperTestHelper.getIntLinkList(), helper.intLinkList, LinkedList.class }
+			{ MapMapperTestHelper.mapStrStr(), helper.mapStrStr, HashMap.class },
+			{ MapMapperTestHelper.mapStrListStr(), helper.mapStrListStr, HashMap.class }
 		});
 	}
 
@@ -58,7 +51,7 @@ public class CollectionMapperTest
 	public Type testType;
 
 	@Parameter(1)
-	public Collection<?> value;
+	public Map<?,?> value;
 
 	@Parameter(2)
 	public Class<?> expectedClass;
@@ -79,7 +72,7 @@ public class CollectionMapperTest
 	public void testWriteAndRead()
 	{
 		collMapper.getWriter(mapper, testType).writeToNBT(nbt, "val", value);
-		Collection<?> ret = collMapper.<Collection<?>>getReader(mapper, testType).readFromNBT(nbt, "val");
+		Map<?,?> ret = collMapper.<Map<?,?>>getReader(mapper, testType).readFromNBT(nbt, "val");
 		assertEquals(value, ret);
 	}
 
@@ -87,15 +80,14 @@ public class CollectionMapperTest
 	public void testExpectedClass()
 	{
 		collMapper.getWriter(mapper, testType).writeToNBT(nbt, "val", value);
-		Collection<?> ret = collMapper.<Collection<?>>getReader(mapper, testType).readFromNBT(nbt, "val");
+		Map<?,?> ret = collMapper.<Map<?,?>>getReader(mapper, testType).readFromNBT(nbt, "val");
 		assertEquals(expectedClass, ret.getClass());
 	}
 
 	@Test
-	public void testListFiller() throws InstantiationException, IllegalAccessException
+	public void testMapFiller() throws InstantiationException, IllegalAccessException
 	{
-		assumeFalse(Set.class.isAssignableFrom(expectedClass));
-		Collection<?> obj = (Collection<?>) expectedClass.newInstance();
+		Map<?,?> obj = (Map<?,?>) expectedClass.newInstance();
 		collMapper.getWriter(mapper, testType).writeToNBT(nbt, "val", value);
 		collMapper.getFiller(mapper, testType).fillFromNBT(nbt, "val", obj);
 		assertEquals(obj, value);
