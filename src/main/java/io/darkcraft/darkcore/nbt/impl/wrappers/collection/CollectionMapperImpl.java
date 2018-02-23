@@ -59,7 +59,7 @@ public class CollectionMapperImpl implements PartialMapper
 		if(raw == TreeSet.class)
 			return TreeSet::new;
 
-		throw new IllegalStateException("Unable to produce supplier for " + pType);
+		return null;
 	}
 
 	@Override
@@ -68,13 +68,29 @@ public class CollectionMapperImpl implements PartialMapper
 		ParameterizedType pType = (ParameterizedType) type;
 		Type child = pType.getActualTypeArguments()[0];
 		NBTReader<?> childReader = parent.getReader(child);
+		Supplier<?> supplier = getSupplier(pType);
+		if(supplier == null)
+			return null;
 		return (NBTReader<T>) new CollectionBaseReader<>(childReader, getSupplier(pType));
+	}
+
+	private <T, U extends List<T>> NBTFiller<U> getListFiller(NBTReader<?> r, NBTFiller<?> f)
+	{
+		NBTReader<T> childReader = (NBTReader<T>) r;
+		NBTFiller<T> childFiller = (NBTFiller<T>) f;
+		return new ListFiller<>(childReader, childFiller);
 	}
 
 	@Override
 	public <T> NBTFiller<T> getFiller(NBTMapper parent, Type type)
 	{
-		// TODO Auto-generated method stub
+		ParameterizedType pType = (ParameterizedType) type;
+		Type child = pType.getActualTypeArguments()[0];
+		NBTReader<?> childReader = parent.getReader(child);
+		NBTFiller<?> childFiller = parent.getFiller(child);
+		Type raw = pType.getRawType();
+		if((raw instanceof Class) && List.class.isAssignableFrom((Class) raw))
+			return (NBTFiller<T>) getListFiller(childReader, childFiller);
 		return null;
 	}
 }

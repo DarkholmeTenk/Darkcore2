@@ -7,8 +7,9 @@ import java.util.Collection;
 import net.minecraft.nbt.NBTTagCompound;
 
 import io.darkcraft.darkcore.nbt.mapper.NBTWriter;
+import io.darkcraft.darkcore.nbt.mapper.NBTWriter.NBTObjWriter;
 
-public class CollectionWriter<T> implements NBTWriter<Collection<T>>
+public class CollectionWriter<T> implements NBTObjWriter<Collection<T>>
 {
 
 	private final NBTWriter<T> writer;
@@ -18,9 +19,8 @@ public class CollectionWriter<T> implements NBTWriter<Collection<T>>
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt, String key, Collection<T> value)
+	public void writeToNBT(NBTTagCompound list, Collection<T> value)
 	{
-		NBTTagCompound list = new NBTTagCompound();
 		list.setInteger(CollectionConstants.SIZE_KEY, value.size());
 		int i = 0;
 		for(T t : value)
@@ -29,7 +29,6 @@ public class CollectionWriter<T> implements NBTWriter<Collection<T>>
 				writer.writeToNBT(list, getKey(i), t);
 			i++;
 		}
-		nbt.setTag(key, list);
 	}
 
 }

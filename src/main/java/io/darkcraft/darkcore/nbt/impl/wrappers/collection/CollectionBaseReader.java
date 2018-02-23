@@ -6,8 +6,9 @@ import java.util.function.Supplier;
 import net.minecraft.nbt.NBTTagCompound;
 
 import io.darkcraft.darkcore.nbt.mapper.NBTReader;
+import io.darkcraft.darkcore.nbt.mapper.NBTReader.NBTObjReader;
 
-public class CollectionBaseReader<T, U extends Collection<T>> implements NBTReader<U>
+public class CollectionBaseReader<T, U extends Collection<T>> implements NBTObjReader<U>
 {
 	private final NBTReader<T> reader;
 	private final Supplier<U> supplier;
@@ -19,10 +20,9 @@ public class CollectionBaseReader<T, U extends Collection<T>> implements NBTRead
 	}
 
 	@Override
-	public U readFromNBT(NBTTagCompound nbt, String id)
+	public U readFromNBT(NBTTagCompound list)
 	{
 		U u = supplier.get();
-		NBTTagCompound list = nbt.getCompoundTag(id);
 		int size = list.getInteger(CollectionConstants.SIZE_KEY);
 		for(int i = 0; i < size; i++)
 		{

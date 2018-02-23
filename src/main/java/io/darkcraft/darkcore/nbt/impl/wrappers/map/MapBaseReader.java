@@ -11,8 +11,9 @@ import java.util.function.Supplier;
 import net.minecraft.nbt.NBTTagCompound;
 
 import io.darkcraft.darkcore.nbt.mapper.NBTReader;
+import io.darkcraft.darkcore.nbt.mapper.NBTReader.NBTObjReader;
 
-public class MapBaseReader<K,V, U extends Map<K,V>> implements NBTReader<U>
+public class MapBaseReader<K,V, U extends Map<K,V>> implements NBTObjReader<U>
 {
 	private final NBTReader<K> keyReader;
 	private final NBTReader<V> valReader;
@@ -28,9 +29,8 @@ public class MapBaseReader<K,V, U extends Map<K,V>> implements NBTReader<U>
 	}
 
 	@Override
-	public U readFromNBT(NBTTagCompound nbt, String id)
+	public U readFromNBT(NBTTagCompound child)
 	{
-		NBTTagCompound child = nbt.getCompoundTag(id);
 		U map = mapMaker.get();
 		int size = child.getInteger(SIZE_KEY);
 		for(int i = 0; i < size; i++)

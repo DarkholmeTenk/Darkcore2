@@ -11,4 +11,15 @@ import net.minecraft.nbt.NBTTagCompound;
 public interface NBTFiller<T>
 {
 	public void fillFromNBT(NBTTagCompound nbt, String id, T existing);
+
+	public static interface NBTObjFiller<T> extends NBTFiller<T>
+	{
+		@Override
+		public default void fillFromNBT(NBTTagCompound nbt, String id, T existing)
+		{
+			fillFromNBT(nbt.getCompoundTag(id), existing);
+		}
+
+		public void fillFromNBT(NBTTagCompound nbt, T existing);
+	}
 }

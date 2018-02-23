@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import net.minecraft.nbt.NBTTagCompound;
 
-import io.darkcraft.darkcore.nbt.impl.mapper.ClassPartialMapper;
+import io.darkcraft.darkcore.nbt.impl.mapper.helpers.ClassPartialMapper;
 import io.darkcraft.darkcore.nbt.util.NBTHelper;
 
 public class PrimitiveWrappers

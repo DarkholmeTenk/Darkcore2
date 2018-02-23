@@ -11,8 +11,9 @@ import java.util.Map.Entry;
 import net.minecraft.nbt.NBTTagCompound;
 
 import io.darkcraft.darkcore.nbt.mapper.NBTWriter;
+import io.darkcraft.darkcore.nbt.mapper.NBTWriter.NBTObjWriter;
 
-public class MapWriter<K,V> implements NBTWriter<Map<K,V>>
+public class MapWriter<K,V> implements NBTObjWriter<Map<K,V>>
 {
 	private final NBTWriter<K> keyWriter;
 	private final NBTWriter<V> valWriter;
@@ -25,9 +26,8 @@ public class MapWriter<K,V> implements NBTWriter<Map<K,V>>
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt, String key, Map<K, V> value)
+	public void writeToNBT(NBTTagCompound child, Map<K, V> value)
 	{
-		NBTTagCompound child = new NBTTagCompound();
 		child.setInteger(SIZE_KEY, value.size());
 		int i = 0;
 		for(Entry<K,V> entry : value.entrySet())
@@ -36,6 +36,5 @@ public class MapWriter<K,V> implements NBTWriter<Map<K,V>>
 			write(child, getMapValKey(i), valWriter, entry.getValue());
 			i++;
 		}
-		nbt.setTag(key, child);
 	}
 }

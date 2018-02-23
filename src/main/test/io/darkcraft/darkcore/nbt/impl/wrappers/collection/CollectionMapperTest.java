@@ -2,6 +2,7 @@ package io.darkcraft.darkcore.nbt.impl.wrappers.collection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assume.assumeFalse;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +28,6 @@ import io.darkcraft.darkcore.nbt.util.NBTHelper;
 public class CollectionMapperTest
 {
 	private static final CollectionMapperTestHelper helper = new CollectionMapperTestHelper();
-	private static final CollectionMapperImpl impl = new CollectionMapperImpl();
 
 	private NBTMapper mapper;
 	private CollectionMapperImpl collMapper;
@@ -88,5 +89,15 @@ public class CollectionMapperTest
 		collMapper.getWriter(mapper, testType).writeToNBT(nbt, "val", value);
 		Collection<?> ret = collMapper.<Collection<?>>getReader(mapper, testType).readFromNBT(nbt, "val");
 		assertEquals(expectedClass, ret.getClass());
+	}
+
+	@Test
+	public void testListFiller() throws InstantiationException, IllegalAccessException
+	{
+		assumeFalse(Set.class.isAssignableFrom(expectedClass));
+		Collection<?> obj = (Collection<?>) expectedClass.newInstance();
+		collMapper.getWriter(mapper, testType).writeToNBT(nbt, "val", value);
+		collMapper.getFiller(mapper, testType).fillFromNBT(nbt, "val", obj);
+		assertEquals(obj, value);
 	}
 }

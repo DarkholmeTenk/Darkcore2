@@ -1,4 +1,4 @@
-package io.darkcraft.darkcore.nbt.impl.mapper;
+package io.darkcraft.darkcore.nbt.impl.mapper.helpers;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
