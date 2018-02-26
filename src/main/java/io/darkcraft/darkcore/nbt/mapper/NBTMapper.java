@@ -30,6 +30,21 @@ public interface NBTMapper
 
 	public <T> NBTFiller<T> getFiller(Type clazz);
 
+	public default <T> NBTWriter<T> getWriter(Class<T> clazz)
+	{
+		return this.<T>getWriter(clazz);
+	}
+
+	public default <T> NBTReader<T> getReader(Class<T> clazz)
+	{
+		return this.<T>getReader(clazz);
+	}
+
+	public default <T> NBTFiller<T> getFiller(Class<T> clazz)
+	{
+		return this.<T>getFiller(clazz);
+	}
+
 	public default <T> NBTWriter<T> getWriter(TypeKey<T> key)
 	{
 		return this.<T>getWriter(key.getType());

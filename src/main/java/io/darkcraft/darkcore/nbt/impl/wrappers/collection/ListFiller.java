@@ -32,7 +32,7 @@ public class ListFiller<T, U extends List<T>> implements NBTObjFiller<U>
 				existing.remove(i - 1);
 		for(int i = 0; i < newSize; i++)
 		{
-			if((filler == null) || (i >= originalSize))
+			if((filler == null) || (i >= originalSize) || (existing.get(i) == null))
 				existing.add(i, reader.readFromNBT(nbt, getKey(i)));
 			else
 				filler.fillFromNBT(nbt, getKey(i), existing.get(i));

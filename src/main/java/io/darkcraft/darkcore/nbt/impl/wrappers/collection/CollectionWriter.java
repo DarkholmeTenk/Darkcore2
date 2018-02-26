@@ -11,7 +11,6 @@ import io.darkcraft.darkcore.nbt.mapper.NBTWriter.NBTObjWriter;
 
 public class CollectionWriter<T> implements NBTObjWriter<Collection<T>>
 {
-
 	private final NBTWriter<T> writer;
 	public CollectionWriter(NBTWriter<T> writer)
 	{
@@ -30,5 +29,4 @@ public class CollectionWriter<T> implements NBTObjWriter<Collection<T>>
 			i++;
 		}
 	}
-
 }

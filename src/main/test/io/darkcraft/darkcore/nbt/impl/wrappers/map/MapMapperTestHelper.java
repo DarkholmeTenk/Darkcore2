@@ -8,7 +8,7 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
-public class MapMapperTestHelper
+class MapMapperTestHelper
 {
 	public Map<String, String> mapStrStr = new HashMap<>(ImmutableMap.of("A", "A", "B", "B", "C", "C"));
 
