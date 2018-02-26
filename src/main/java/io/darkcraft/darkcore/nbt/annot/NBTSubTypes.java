@@ -18,5 +18,25 @@ import java.lang.annotation.Target;
 @Target(TYPE)
 public @interface NBTSubTypes
 {
+	/**
+	 * @return an array of all the possible sub types that the class could end up being
+	 */
+	SubType[] value();
 
+	/**
+	 * @return a class which will be defaulted to if no class info is found
+	 */
+	Class<?> defaultClass() default Object.class;
+
+	public @interface SubType
+	{
+		/**
+		 * @return the class this subtype represents
+		 */
+		Class<?> clazz();
+		/**
+		 * @return the name the subtype will be stored as
+		 */
+		String name();
+	}
 }

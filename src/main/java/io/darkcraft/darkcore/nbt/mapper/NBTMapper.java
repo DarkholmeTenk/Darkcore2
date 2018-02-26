@@ -69,4 +69,9 @@ public interface NBTMapper
 	{
 		return new CollectionBaseReader<>(getReader(clazz), ArrayList::new);
 	}
+
+	public default Class<?> getViewClass()
+	{
+		return null;
+	}
 }
