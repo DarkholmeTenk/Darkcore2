@@ -1,8 +1,5 @@
 package io.darkcraft.darkcore.nbt.impl.reflection.reading;
 
-import static io.darkcraft.darkcore.nbt.impl.reflection.reading.ReflectionReader.getReadingFields;
-import static java.util.Collections.emptySet;
-
 import java.util.Map;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,8 +9,8 @@ import io.darkcraft.darkcore.nbt.mapper.NBTMapper;
 
 public class ReflectionFiller<T> implements NBTObjFiller<T>
 {
-	private final Map<String, ReadingField<T,?>> readers;
-	private ReflectionFiller(Map<String, ReadingField<T,?>> readers)
+	private final Map<String, FillingField<T,?>> readers;
+	private ReflectionFiller(Map<String, FillingField<T,?>> readers)
 	{
 		this.readers = readers;
 	}
@@ -26,6 +23,6 @@ public class ReflectionFiller<T> implements NBTObjFiller<T>
 
 	public static <T> ReflectionFiller<T> construct(NBTMapper parent, Class<T> baseClass)
 	{
-		return new ReflectionFiller(getReadingFields(parent, emptySet(), baseClass));
+		return new ReflectionFiller(FillingField.construct(parent, baseClass));
 	}
 }

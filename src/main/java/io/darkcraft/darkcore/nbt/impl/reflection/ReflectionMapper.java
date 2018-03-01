@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import io.darkcraft.darkcore.nbt.annot.NBTReflect;
 import io.darkcraft.darkcore.nbt.impl.reflection.reading.ReflectionFiller;
 import io.darkcraft.darkcore.nbt.impl.reflection.reading.ReflectionReader;
-import io.darkcraft.darkcore.nbt.impl.reflection.writing.ReflectionWriter;
+import io.darkcraft.darkcore.nbt.impl.reflection.reading.ReflectionWriter;
 import io.darkcraft.darkcore.nbt.mapper.NBTFiller;
 import io.darkcraft.darkcore.nbt.mapper.NBTMapper;
 import io.darkcraft.darkcore.nbt.mapper.NBTReader;

@@ -3,6 +3,7 @@ package io.darkcraft.darkcore.nbt.impl.reflection.reading;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.function.BiConsumer;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,11 +20,13 @@ class ReadingField<T,V>
 {
 	private static final Logger LOGGER = LogManager.getLogger(ReadingField.class);
 
-	private final BiConsumer<T,V> value;
-	private final NBTReader<V> reader;
+	final Type type;
+	final BiConsumer<T,V> value;
+	final NBTReader<V> reader;
 
-	private ReadingField(BiConsumer<T,V> value, NBTReader<V> reader)
+	private ReadingField(Type type, BiConsumer<T,V> value, NBTReader<V> reader)
 	{
+		this.type = type;
 		this.value = value;
 		this.reader = reader;
 	}
@@ -46,10 +49,11 @@ class ReadingField<T,V>
 				throw new NBTMappingException("Unable to deserialize for " + f, e);
 			}
 		};
-		NBTReader<V> reader = parent.getReader(f.getGenericType());
+		Type t = f.getGenericType();
+		NBTReader<V> reader = parent.getReader(t);
 		if(reader == null)
-			throw new NBTMapperBuildException("Unable to find reader for " + f.getGenericType());
-		return new ReadingField<>(consumer, reader);
+			throw new NBTMapperBuildException("Unable to find reader for " + t);
+		return new ReadingField<>(t, consumer, reader);
 	}
 
 	public static <T,V> ReadingField<T,V> getField(NBTMapper parent, Method m)
@@ -65,9 +69,10 @@ class ReadingField<T,V>
 				throw new NBTMappingException("Unable to deserialize for " + m, e);
 			}
 		};
-		NBTReader<V> reader = parent.getReader(m.getGenericParameterTypes()[0]);
+		Type t = m.getGenericParameterTypes()[0];
+		NBTReader<V> reader = parent.getReader(t);
 		if(reader == null)
-			throw new NBTMapperBuildException("Unable to find reader for " + m.getGenericParameterTypes()[0]);
-		return new ReadingField<>(consumer, reader);
+			throw new NBTMapperBuildException("Unable to find reader for " + t);
+		return new ReadingField<>(t, consumer, reader);
 	}
 }

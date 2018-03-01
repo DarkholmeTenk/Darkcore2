@@ -1,4 +1,4 @@
-package io.darkcraft.darkcore.nbt.impl.reflection.writing;
+package io.darkcraft.darkcore.nbt.impl.reflection.reading;
 
 import static io.darkcraft.darkcore.nbt.util.ReflectHelper.getAnnotation;
 
@@ -49,6 +49,8 @@ public class ReflectionWriter<T> implements NBTObjWriter<T>
 	private static <T> void fillMap(Map<String, WritingField<T,?>> map,
 			NBTMapper parent, Class<?> viewClass, Class<? super T> baseClass)
 	{
+		if(baseClass.getSuperclass() != null)
+			fillMap(map, parent, viewClass, baseClass.getSuperclass());
 		for(Field f : baseClass.getDeclaredFields())
 		{
 			Optional<NBTProperty> prop = getAnnotation(f, NBTProperty.class);
@@ -77,18 +79,21 @@ public class ReflectionWriter<T> implements NBTObjWriter<T>
 					.orElseGet(()->ReflectHelper.resolveMethodName(m.getName()));
 			map.put(name, WritingField.getField(parent, m));
 		}
-		if(baseClass.getSuperclass() != null)
-			fillMap(map, parent, viewClass, baseClass.getSuperclass());
+	}
+
+	static <T> Map<String, WritingField<T,?>> getFields(NBTMapper parent, Class<T> baseClass)
+	{
+		Map<String, WritingField<T,?>> map = new HashMap<>();
+		Class<?> viewClass = parent.getViewClass();
+		fillMap(map, parent, viewClass, baseClass);
+		return map;
 	}
 
 	public static <T> ReflectionWriter<T> construct(NBTMapper parent, Class<T> baseClass)
 	{
 		try
 		{
-			Map<String, WritingField<T,?>> map = new HashMap<>();
-			Class<?> viewClass = parent.getViewClass();
-			fillMap(map, parent, viewClass, baseClass);
-			return new ReflectionWriter<>(map);
+			return new ReflectionWriter<>(getFields(parent, baseClass));
 		}
 		catch(SecurityException e)
 		{

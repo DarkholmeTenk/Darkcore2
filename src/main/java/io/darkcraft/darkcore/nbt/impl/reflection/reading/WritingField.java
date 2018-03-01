@@ -1,4 +1,4 @@
-package io.darkcraft.darkcore.nbt.impl.reflection.writing;
+package io.darkcraft.darkcore.nbt.impl.reflection.reading;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

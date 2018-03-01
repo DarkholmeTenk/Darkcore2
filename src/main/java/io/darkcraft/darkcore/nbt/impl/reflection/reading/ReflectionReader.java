@@ -4,6 +4,7 @@ import static io.darkcraft.darkcore.nbt.util.ReflectHelper.getAnnotation;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -37,16 +38,19 @@ public class ReflectionReader<T> implements NBTObjReader<T>
 		return t;
 	}
 
-	static <T> Map<String, ReadingField<T,?>> getReadingFields(NBTMapper parent, Set<String> alreadyHandled,
-			Class<T> baseClass)
+	private static <T> void getReadingFields(Map<String, ReadingField<T,?>> map,
+			NBTMapper parent, Set<String> alreadyHandled, Class<?> baseClass, Class<?> viewClass)
 	{
-		Class<?> viewClass = parent.getViewClass();
-		Map<String, ReadingField<T,?>> map = new HashMap<>();
+		if(baseClass.getSuperclass() != null)
+			getReadingFields(map, parent, alreadyHandled, baseClass.getSuperclass(), viewClass);
 		for(Field f : baseClass.getDeclaredFields())
 		{
 			Optional<NBTProperty> prop = getAnnotation(f, NBTProperty.class);
 			NBTView view = f.getAnnotation(NBTView.class);
 			if(!prop.isPresent() || !ReflectHelper.isValid(view, viewClass))
+				continue;
+			int modifiers = f.getModifiers();
+			if(Modifier.isFinal(modifiers))
 				continue;
 			f.setAccessible(true);
 			String name = prop.map(NBTProperty::value)
@@ -70,13 +74,20 @@ public class ReflectionReader<T> implements NBTObjReader<T>
 			if(!alreadyHandled.contains(name))
 				map.put(name, ReadingField.getField(parent, m));
 		}
+	}
+
+	static <T> Map<String, ReadingField<T,?>> getFields(NBTMapper parent, Set<String> alreadyHandled,
+			Class<T> baseClass)
+	{
+		Map<String, ReadingField<T, ?>> map = new HashMap<>();
+		getReadingFields(map, parent, alreadyHandled, baseClass, parent.getViewClass());
 		return map;
 	}
 
 	public static <T> ReflectionReader<T> construct(NBTMapper parent, Class<T> baseClass)
 	{
 		ReadingConstructor<T> constructor = ReadingConstructor.construct(parent, baseClass);
-		Map<String, ReadingField<T,?>> fields = getReadingFields(parent, constructor.getFields(), baseClass);
+		Map<String, ReadingField<T,?>> fields = getFields(parent, constructor.getFields(), baseClass);
 		return new ReflectionReader(constructor, fields);
 	}
 }

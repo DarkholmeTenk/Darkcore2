@@ -14,9 +14,11 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.nbt.NBTTagCompound;
 
 import io.darkcraft.darkcore.nbt.annot.NBTConstructor;
+import io.darkcraft.darkcore.nbt.annot.NBTView;
 import io.darkcraft.darkcore.nbt.exception.NBTMapperBuildException;
 import io.darkcraft.darkcore.nbt.exception.NBTReadingException;
 import io.darkcraft.darkcore.nbt.mapper.NBTMapper;
+import io.darkcraft.darkcore.nbt.util.ReflectHelper;
 
 class ReadingConstructor<T>
 {
@@ -67,11 +69,13 @@ class ReadingConstructor<T>
 
 	static <T> ReadingConstructor<T> construct(NBTMapper parent, Class<T> baseClass)
 	{
+		Class<?> viewClass = parent.getViewClass();
 		for(Constructor<?> constructor : baseClass.getDeclaredConstructors())
 		{
 			if(!constructor.isAnnotationPresent(NBTConstructor.class))
 				continue;
-			return construct(parent, baseClass, (Constructor<T>) constructor);
+			if(ReflectHelper.isValid(constructor.getAnnotation(NBTView.class), viewClass))
+				return construct(parent, baseClass, (Constructor<T>) constructor);
 		}
 		try
 		{
