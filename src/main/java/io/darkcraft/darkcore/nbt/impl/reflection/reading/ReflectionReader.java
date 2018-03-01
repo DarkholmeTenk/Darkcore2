@@ -37,7 +37,7 @@ public class ReflectionReader<T> implements NBTObjReader<T>
 		return t;
 	}
 
-	private static <T> Map<String, ReadingField<T,?>> getReadingFields(NBTMapper parent, Set<String> alreadyHandled,
+	static <T> Map<String, ReadingField<T,?>> getReadingFields(NBTMapper parent, Set<String> alreadyHandled,
 			Class<T> baseClass)
 	{
 		Class<?> viewClass = parent.getViewClass();
@@ -61,10 +61,8 @@ public class ReflectionReader<T> implements NBTObjReader<T>
 			NBTView view = m.getAnnotation(NBTView.class);
 			if(!prop.isPresent() || !ReflectHelper.isValid(view, viewClass))
 				continue;
-			if((m.getReturnType() == null) || (m.getReturnType() == Void.TYPE))
-				continue;
-			if(m.getParameterCount() > 0)
-				throw new NBTMapperBuildException("Unable to use method " + m + " as a getter as it takes params");
+			if(m.getParameterCount() != 1)
+				throw new NBTMapperBuildException("Unable to use method " + m + " as a setter as it doesn't take 1 param");
 			m.setAccessible(true);
 			String name = prop.map(NBTProperty::value)
 					.filter(n->!n.isEmpty())

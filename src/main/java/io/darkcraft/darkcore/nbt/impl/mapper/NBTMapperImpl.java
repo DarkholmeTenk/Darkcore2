@@ -47,5 +47,4 @@ public class NBTMapperImpl implements NBTMapper
 	{
 		return findU(type, mapper->mapper.getFiller(this, type));
 	}
-
 }
