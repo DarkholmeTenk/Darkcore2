@@ -18,5 +18,8 @@ import java.lang.annotation.Target;
 @Target(TYPE)
 public @interface NBTReflect
 {
-
+	/**
+	 * @return true if a filler should be generated from this type
+	 */
+	boolean canFill() default true;
 }

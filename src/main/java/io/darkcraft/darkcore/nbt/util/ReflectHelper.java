@@ -1,9 +1,9 @@
 package io.darkcraft.darkcore.nbt.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -53,14 +53,14 @@ public final class ReflectHelper
 
 	public static String resolveMethodName(String name)
 	{
-		if(name.startsWith("get") && (name.length() > 4))
+		if((name.startsWith("get") || name.startsWith("set")) && (name.length() > 4))
 			return name.substring(3, 4).toLowerCase() + name.substring(4);
 		if(name.startsWith("is") && (name.length() > 3))
 			return name.substring(2, 3).toLowerCase() + name.substring(3);
 		return name;
 	}
 
-	public static <T extends Annotation> Optional<T> getAnnotation(Field f, Class<T> clazz)
+	public static <T extends Annotation> Optional<T> getAnnotation(AnnotatedElement f, Class<T> clazz)
 	{
 		return Optional.ofNullable(f.getAnnotation(clazz));
 	}

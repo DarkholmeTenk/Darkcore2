@@ -1,4 +1,4 @@
-package io.darkcraft.darkcore.nbt.impl.reflection;
+package io.darkcraft.darkcore.nbt.impl.reflection.reading;
 
 import static io.darkcraft.darkcore.nbt.util.ReflectHelper.getAnnotation;
 
@@ -6,11 +6,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.Set;
 
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -18,31 +15,33 @@ import io.darkcraft.darkcore.nbt.annot.NBTProperty;
 import io.darkcraft.darkcore.nbt.annot.NBTView;
 import io.darkcraft.darkcore.nbt.exception.NBTMapperBuildException;
 import io.darkcraft.darkcore.nbt.mapper.NBTMapper;
-import io.darkcraft.darkcore.nbt.mapper.NBTWriter;
-import io.darkcraft.darkcore.nbt.mapper.NBTWriter.NBTObjWriter;
+import io.darkcraft.darkcore.nbt.mapper.NBTReader.NBTObjReader;
 import io.darkcraft.darkcore.nbt.util.ReflectHelper;
 
-class ReflectionWriter<T> implements NBTObjWriter<T>
+public class ReflectionReader<T> implements NBTObjReader<T>
 {
-	private static final Logger LOGGER = LogManager.getLogger(ReflectionWriter.class);
+	private final ReadingConstructor<T> constructor;
+	private final Map<String, ReadingField<T,?>> readers;
 
-	private final Map<String, WritingField<T,?>> writers;
-
-	private ReflectionWriter(Map<String, WritingField<T,?>> writers)
+	private ReflectionReader(ReadingConstructor<T> constructor, Map<String, ReadingField<T,?>> readers)
 	{
-		this.writers = writers;
+		this.constructor = constructor;
+		this.readers = readers;
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt, T value)
+	public T readFromNBT(NBTTagCompound nbt)
 	{
-		for(Entry<String, WritingField<T, ?>> entry : writers.entrySet())
-			entry.getValue().write(nbt, entry.getKey(), value);
+		T t = constructor.readFromNBT(nbt);
+		readers.forEach((s,f)->f.read(nbt, s, t));
+		return t;
 	}
 
-	private static <T> void fillMap(Map<String, WritingField<T,?>> map,
-			NBTMapper parent, Class<?> viewClass, Class<? super T> baseClass)
+	private static <T> Map<String, ReadingField<T,?>> getReadingFields(NBTMapper parent, Set<String> alreadyHandled,
+			Class<T> baseClass)
 	{
+		Class<?> viewClass = parent.getViewClass();
+		Map<String, ReadingField<T,?>> map = new HashMap<>();
 		for(Field f : baseClass.getDeclaredFields())
 		{
 			Optional<NBTProperty> prop = getAnnotation(f, NBTProperty.class);
@@ -53,7 +52,8 @@ class ReflectionWriter<T> implements NBTObjWriter<T>
 			String name = prop.map(NBTProperty::value)
 					.filter(n->!n.isEmpty())
 					.orElseGet(()->f.getName());
-			map.put(name, WritingField.getField(parent, f));
+			if(!alreadyHandled.contains(name))
+				map.put(name, ReadingField.getField(parent, f));
 		}
 		for(Method m : baseClass.getDeclaredMethods())
 		{
@@ -69,25 +69,16 @@ class ReflectionWriter<T> implements NBTObjWriter<T>
 			String name = prop.map(NBTProperty::value)
 					.filter(n->!n.isEmpty())
 					.orElseGet(()->ReflectHelper.resolveMethodName(m.getName()));
-			map.put(name, WritingField.getField(parent, m));
+			if(!alreadyHandled.contains(name))
+				map.put(name, ReadingField.getField(parent, m));
 		}
-		if(baseClass.getSuperclass() != null)
-			fillMap(map, parent, viewClass, baseClass.getSuperclass());
+		return map;
 	}
 
-	static <T> NBTWriter<T> construct(NBTMapper parent, Class<T> baseClass)
+	public static <T> ReflectionReader<T> construct(NBTMapper parent, Class<T> baseClass)
 	{
-		try
-		{
-			Map<String, WritingField<T,?>> map = new HashMap<>();
-			Class<?> viewClass = parent.getViewClass();
-			fillMap(map, parent, viewClass, baseClass);
-			return new ReflectionWriter(map);
-		}
-		catch(SecurityException e)
-		{
-			LOGGER.error("Error construcing mapper", e);
-			throw new NBTMapperBuildException("Unable to construct mapper for " + baseClass, e);
-		}
+		ReadingConstructor<T> constructor = ReadingConstructor.construct(parent, baseClass);
+		Map<String, ReadingField<T,?>> fields = getReadingFields(parent, constructor.getFields(), baseClass);
+		return new ReflectionReader(constructor, fields);
 	}
 }

@@ -3,6 +3,7 @@ package io.darkcraft.darkcore.nbt.impl.reflection;
 import java.lang.reflect.Type;
 
 import io.darkcraft.darkcore.nbt.annot.NBTReflect;
+import io.darkcraft.darkcore.nbt.impl.reflection.writing.ReflectionWriter;
 import io.darkcraft.darkcore.nbt.mapper.NBTFiller;
 import io.darkcraft.darkcore.nbt.mapper.NBTMapper;
 import io.darkcraft.darkcore.nbt.mapper.NBTReader;

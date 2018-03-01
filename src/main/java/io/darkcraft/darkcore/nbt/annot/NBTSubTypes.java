@@ -19,6 +19,11 @@ import java.lang.annotation.Target;
 public @interface NBTSubTypes
 {
 	/**
+	 * @return a name that will be used in the nbt to save the type as
+	 */
+	String fieldName() default "clz";
+
+	/**
 	 * @return an array of all the possible sub types that the class could end up being
 	 */
 	SubType[] value();
