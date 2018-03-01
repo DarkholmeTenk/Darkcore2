@@ -22,6 +22,7 @@ import io.darkcraft.darkcore.nbt.impl.wrappers.reflection.ViewTestHelper.AAA;
 import io.darkcraft.darkcore.nbt.impl.wrappers.reflection.ViewTestHelper.AAB;
 import io.darkcraft.darkcore.nbt.impl.wrappers.reflection.ViewTestHelper.AB;
 import io.darkcraft.darkcore.nbt.impl.wrappers.reflection.ViewTestHelper.B;
+import io.darkcraft.darkcore.nbt.impl.wrappers.reflection.ViewTestHelper.BOTH;
 import io.darkcraft.darkcore.nbt.impl.wrappers.reflection.ViewTestHelper.C;
 import io.darkcraft.darkcore.nbt.mapper.NBTFiller.NBTObjFiller;
 import io.darkcraft.darkcore.nbt.mapper.NBTMapper;
@@ -145,6 +146,21 @@ public class ViewTest
 			nbt.setInteger("both2", 1);
 			nbt.setInteger("none", 1);
 			vals.add(new Object[] {AAB.class, vth, nbt});
+		}
+		{
+			ViewTestHelper vth = new ViewTestHelper();
+			vth.a = 1;
+			vth.b = 1;
+			vth.both = 1;
+			vth.both2 = 1;
+			vth.none = 1;
+			NBTTagCompound nbt = new NBTTagCompound();
+			nbt.setInteger("a", 1);
+			nbt.setInteger("b", 1);
+			nbt.setInteger("both", 1);
+			nbt.setInteger("both2", 1);
+			nbt.setInteger("none", 1);
+			vals.add(new Object[] {BOTH.class, vth, nbt});
 		}
 		{
 			ViewTestHelper vth = new ViewTestHelper();
