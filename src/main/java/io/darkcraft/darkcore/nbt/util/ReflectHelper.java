@@ -40,14 +40,14 @@ public final class ReflectHelper
 		if((view == null) || (viewClass == null))
 			return true;
 		for(Class<?> clz : view.value())
-			if(viewClass == clz)
+			if(viewClass.isAssignableFrom(clz) || clz.isAssignableFrom(viewClass))
 				return true;
-		if(viewClass.getSuperclass() != null)
-			if(isValid(view, viewClass.getSuperclass()))
-				return true;
-		for(Class<?> inter : viewClass.getInterfaces())
-			if(isValid(view, inter))
-				return true;
+//		if(viewClass.getSuperclass() != null)
+//			if(isValid(view, viewClass.getSuperclass()))
+//				return true;
+//		for(Class<?> inter : viewClass.getInterfaces())
+//			if(isValid(view, inter))
+//				return true;
 		return false;
 	}
 
