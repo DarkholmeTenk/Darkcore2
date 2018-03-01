@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import io.darkcraft.darkcore.nbt.impl.wrappers.PrimitiveWrappers;
 import io.darkcraft.darkcore.nbt.impl.wrappers.array.ArrayMapperImpl;
 import io.darkcraft.darkcore.nbt.impl.wrappers.collection.CollectionMapperImpl;
+import io.darkcraft.darkcore.nbt.impl.wrappers.enums.EnumMapper;
 import io.darkcraft.darkcore.nbt.impl.wrappers.map.MapMapperImpl;
 import io.darkcraft.darkcore.nbt.impl.wrappers.minecraft.MinecraftWrapper;
 import io.darkcraft.darkcore.nbt.mapper.NBTReader;
@@ -28,6 +29,7 @@ public class NBTHelper
 	{
 		partialMappers.add(PrimitiveWrappers.PARTIAL);
 		partialMappers.add(MinecraftWrapper.PARTIAL);
+		partialMappers.add(new EnumMapper());
 		partialMappers.add(new ArrayMapperImpl());
 		partialMappers.add(new CollectionMapperImpl());
 		partialMappers.add(new MapMapperImpl());
