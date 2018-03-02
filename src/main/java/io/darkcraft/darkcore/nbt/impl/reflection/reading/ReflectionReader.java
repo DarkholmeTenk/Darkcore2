@@ -63,9 +63,9 @@ public class ReflectionReader<T> implements NBTObjReader<T>
 		{
 			Optional<NBTProperty> prop = getAnnotation(m, NBTProperty.class);
 			NBTView view = m.getAnnotation(NBTView.class);
-			if(!prop.isPresent() || !ReflectHelper.isValid(view, viewClass))
+			if(!prop.isPresent() || !ReflectHelper.isValid(view, viewClass) || (m.getParameterCount() == 0))
 				continue;
-			if(m.getParameterCount() != 1)
+			if(m.getParameterCount() > 1)
 				throw new NBTMapperBuildException("Unable to use method " + m + " as a setter as it doesn't take 1 param");
 			m.setAccessible(true);
 			String name = prop.map(NBTProperty::value)
