@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.base.MoreObjects;
+
 import net.minecraft.nbt.NBTTagCompound;
 
 import io.darkcraft.darkcore.nbt.annot.NBTConstructor;
@@ -85,5 +87,14 @@ class ReadingConstructor<T>
 		{
 			throw new NBTMapperBuildException("Couldn't find a @NBTConstructor constructor or no-args constructor", e);
 		}
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(this)
+				.add("constructor", constructor)
+				.add("params", params)
+				.toString();
 	}
 }

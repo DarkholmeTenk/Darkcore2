@@ -9,6 +9,8 @@ import java.util.function.BiConsumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.base.MoreObjects;
+
 import net.minecraft.nbt.NBTTagCompound;
 
 import io.darkcraft.darkcore.nbt.exception.NBTMapperBuildException;
@@ -74,5 +76,13 @@ class ReadingField<T,V>
 		if(reader == null)
 			throw new NBTMapperBuildException("Unable to find reader for " + t);
 		return new ReadingField<>(t, consumer, reader);
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(this)
+				.add("type", type)
+				.toString();
 	}
 }

@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import com.google.common.base.MoreObjects;
+
 import net.minecraft.nbt.NBTTagCompound;
 
 import io.darkcraft.darkcore.nbt.annot.NBTProperty;
@@ -89,5 +91,14 @@ public class ReflectionReader<T> implements NBTObjReader<T>
 		ReadingConstructor<T> constructor = ReadingConstructor.construct(parent, baseClass);
 		Map<String, ReadingField<T,?>> fields = getFields(parent, constructor.getFields(), baseClass);
 		return new ReflectionReader(constructor, fields);
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(this)
+				.add("constructor", constructor)
+				.add("readers", readers)
+				.toString();
 	}
 }

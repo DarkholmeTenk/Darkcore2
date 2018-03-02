@@ -2,6 +2,8 @@ package io.darkcraft.darkcore.nbt.impl.reflection.reading;
 
 import java.lang.reflect.Parameter;
 
+import com.google.common.base.MoreObjects;
+
 import net.minecraft.nbt.NBTTagCompound;
 
 import io.darkcraft.darkcore.nbt.annot.NBTProperty;
@@ -37,5 +39,13 @@ class ReadingConstructorParam<V>
 				.orElseGet(param::getName);
 		NBTReader<?> reader = parent.getReader(param.getParameterizedType());
 		return new ReadingConstructorParam(name, reader);
+	}
+
+	@Override
+	public String toString()
+	{
+		return MoreObjects.toStringHelper(this)
+				.add("name", name)
+				.toString();
 	}
 }

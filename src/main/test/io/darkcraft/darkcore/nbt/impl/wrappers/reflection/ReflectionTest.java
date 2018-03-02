@@ -39,6 +39,6 @@ public class ReflectionTest
 		writer.writeToNBT(nbt, rth);
 		ReflectionTestHelper second = reader.readFromNBT(nbt);
 		assertEquals(rth, second);
-		System.out.println(nbt);
+		System.out.println(reader);
 	}
 }

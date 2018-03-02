@@ -33,7 +33,9 @@ public class ReflectionTestHelper
 	private final int lolwut;
 
 	@NBTConstructor
-	public ReflectionTestHelper(String name, int age,
+	public ReflectionTestHelper(
+			@NBTProperty("name") String name,
+			@NBTProperty("age") int age,
 			@NBTProperty("field") int lolwut)
 	{
 		this.name = name;

@@ -13,7 +13,10 @@ import java.lang.annotation.Target;
  * a new instance of the class.<p/>
  *
  * Parameters on the method can be annotated with {@link NBTProperty} to indicate that these values should be
- * passed in.
+ * passed in from specific fields.<p/>
+ *
+ * If the parameters are <em>not</em> annotated, the compiler option <code>-parameters</code> must be turned on,
+ * otherwise they will come out as arg0, arg1, etc...
  * @author dark
  *
  */
