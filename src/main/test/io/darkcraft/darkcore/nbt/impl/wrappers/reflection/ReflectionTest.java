@@ -1,5 +1,7 @@
 package io.darkcraft.darkcore.nbt.impl.wrappers.reflection;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,6 +37,8 @@ public class ReflectionTest
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
 		writer.writeToNBT(nbt, rth);
+		ReflectionTestHelper second = reader.readFromNBT(nbt);
+		assertEquals(rth, second);
 		System.out.println(nbt);
 	}
 }

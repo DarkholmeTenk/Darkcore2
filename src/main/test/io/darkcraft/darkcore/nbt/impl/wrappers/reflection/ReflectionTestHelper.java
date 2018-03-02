@@ -56,7 +56,8 @@ public class ReflectionTestHelper
 	@NBTProperty
 	public void setMap(Map<Long, String> map)
 	{
-		this.map = new HashMap<>(map);
+		if(map != null)
+			this.map = new HashMap<>(map);
 	}
 
 	public void setA(String a)
