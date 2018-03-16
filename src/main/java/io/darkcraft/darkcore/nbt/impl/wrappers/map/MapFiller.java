@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import io.darkcraft.darkcore.nbt.mapper.NBTFiller;
 import io.darkcraft.darkcore.nbt.mapper.NBTFiller.NBTObjFiller;
 import io.darkcraft.darkcore.nbt.mapper.NBTReader;
+import io.darkcraft.darkcore.nbt.util.NBTHelper;
 
 public class MapFiller<K,V> implements NBTObjFiller<Map<K,V>>
 {
@@ -36,15 +37,19 @@ public class MapFiller<K,V> implements NBTObjFiller<Map<K,V>>
 		{
 			K key = keyReader.readFromNBT(nbt, getMapKeyKey(i));
 			newKeys.add(key);
-			if((valFiller != null) && existing.containsKey(key))
-				valFiller.fillFromNBT(nbt, getMapValKey(i), existing.get(key));
-			else
+			if(!NBTHelper.fill(valFiller, nbt, getMapValKey(i), existing.get(key)))
 				existing.put(key, valReader.readFromNBT(nbt, getMapValKey(i)));
 		}
 		Iterator<K> keyIter = existing.keySet().iterator();
 		while(keyIter.hasNext())
 			if(!newKeys.contains(keyIter.next()))
 				keyIter.remove();
+	}
+
+	@Override
+	public boolean isValid(NBTTagCompound nbt, Map<K, V> existing)
+	{
+		return true;
 	}
 
 }

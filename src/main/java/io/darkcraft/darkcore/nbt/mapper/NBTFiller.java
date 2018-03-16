@@ -12,6 +12,8 @@ public interface NBTFiller<T>
 {
 	public void fillFromNBT(NBTTagCompound nbt, String id, T existing);
 
+	public boolean isValid(NBTTagCompound nbt, String id, T existing);
+
 	public static interface NBTObjFiller<T> extends NBTFiller<T>
 	{
 		@Override
@@ -20,6 +22,14 @@ public interface NBTFiller<T>
 			fillFromNBT(nbt.getCompoundTag(id), existing);
 		}
 
+		@Override
+		public default boolean isValid(NBTTagCompound nbt, String id, T existing)
+		{
+			return isValid(nbt.getCompoundTag(id), existing);
+		}
+
 		public void fillFromNBT(NBTTagCompound nbt, T existing);
+
+		public boolean isValid(NBTTagCompound nbt, T existing);
 	}
 }

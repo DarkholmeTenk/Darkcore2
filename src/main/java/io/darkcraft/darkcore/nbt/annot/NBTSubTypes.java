@@ -21,7 +21,13 @@ public @interface NBTSubTypes
 	/**
 	 * @return a name that will be used in the nbt to save the type as
 	 */
-	String fieldName() default "clz";
+	String fieldName() default "typ";
+
+	/**
+	 * @return an id that will be used to serialise the value to if the mapper for a type is not
+	 * an obj mapper
+	 */
+	String valName() default "o";
 
 	/**
 	 * @return an array of all the possible sub types that the class could end up being

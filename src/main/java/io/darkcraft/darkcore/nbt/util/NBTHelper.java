@@ -15,6 +15,7 @@ import io.darkcraft.darkcore.nbt.impl.wrappers.collection.CollectionMapperImpl;
 import io.darkcraft.darkcore.nbt.impl.wrappers.enums.EnumMapper;
 import io.darkcraft.darkcore.nbt.impl.wrappers.map.MapMapperImpl;
 import io.darkcraft.darkcore.nbt.impl.wrappers.minecraft.MinecraftWrapper;
+import io.darkcraft.darkcore.nbt.mapper.NBTFiller;
 import io.darkcraft.darkcore.nbt.mapper.NBTReader;
 import io.darkcraft.darkcore.nbt.mapper.NBTWriter;
 import io.darkcraft.darkcore.nbt.mapper.PartialMapper;
@@ -58,5 +59,17 @@ public class NBTHelper
 	{
 		if(val != null)
 			writer.writeToNBT(compound, id, val);
+	}
+
+	/**
+	 * Attempts to fill an existing value and returns whether or not it succeeded
+	 * @return true if filling succeeded
+	 */
+	public static <T> boolean fill(@Nullable NBTFiller<T> filler, @Nonnull NBTTagCompound nbt, @Nonnull String id,
+			@Nullable T existing)
+	{
+		if((filler == null) || (existing == null) || !filler.isValid(nbt, id, existing))
+			return false;
+		return true;
 	}
 }

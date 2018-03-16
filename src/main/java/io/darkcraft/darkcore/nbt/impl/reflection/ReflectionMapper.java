@@ -1,6 +1,8 @@
 package io.darkcraft.darkcore.nbt.impl.reflection;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.darkcraft.darkcore.nbt.annot.NBTReflect;
 import io.darkcraft.darkcore.nbt.impl.reflection.reading.ReflectionFiller;
@@ -15,6 +17,10 @@ import io.darkcraft.darkcore.nbt.util.ReflectHelper;
 
 public class ReflectionMapper implements PartialMapper
 {
+	private final Map<Type, NBTWriter<?>> writers = new HashMap<>();
+	private final Map<Type, NBTReader<?>> readers = new HashMap<>();
+	private final Map<Type, NBTFiller<?>> fillers = new HashMap<>();
+
 	@Override
 	public boolean canHandle(Type type)
 	{
@@ -27,19 +33,22 @@ public class ReflectionMapper implements PartialMapper
 	@Override
 	public <T> NBTWriter<T> getWriter(NBTMapper parent, Type type)
 	{
-		return (NBTWriter<T>) ReflectionWriter.construct(parent, ReflectHelper.getBaseClass(type));
+		return (NBTWriter<T>) writers.computeIfAbsent(type,
+				t->ReflectionWriter.construct(parent, ReflectHelper.getBaseClass(t)));
 	}
 
 	@Override
 	public <T> NBTReader<T> getReader(NBTMapper parent, Type type)
 	{
-		return (NBTReader<T>) ReflectionReader.construct(parent, ReflectHelper.getBaseClass(type));
+		return (NBTReader<T>) readers.computeIfAbsent(type,
+				t->ReflectionReader.construct(parent, ReflectHelper.getBaseClass(t)));
 	}
 
 	@Override
 	public <T> NBTFiller<T> getFiller(NBTMapper parent, Type type)
 	{
-		return (NBTFiller<T>) ReflectionFiller.construct(parent, ReflectHelper.getBaseClass(type));
+		return (NBTFiller<T>) fillers.computeIfAbsent(type,
+				t->ReflectionFiller.construct(parent, ReflectHelper.getBaseClass(t)));
 	}
 
 }

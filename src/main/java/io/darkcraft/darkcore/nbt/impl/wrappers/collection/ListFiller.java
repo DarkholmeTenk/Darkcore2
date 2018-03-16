@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import io.darkcraft.darkcore.nbt.mapper.NBTFiller;
 import io.darkcraft.darkcore.nbt.mapper.NBTFiller.NBTObjFiller;
 import io.darkcraft.darkcore.nbt.mapper.NBTReader;
+import io.darkcraft.darkcore.nbt.util.NBTHelper;
 
 public class ListFiller<T, U extends List<T>> implements NBTObjFiller<U>
 {
@@ -32,10 +33,14 @@ public class ListFiller<T, U extends List<T>> implements NBTObjFiller<U>
 				existing.remove(i - 1);
 		for(int i = 0; i < newSize; i++)
 		{
-			if((filler == null) || (i >= originalSize) || (existing.get(i) == null))
+			if(!NBTHelper.fill(filler, nbt, getKey(i), existing.get(i)))
 				existing.add(i, reader.readFromNBT(nbt, getKey(i)));
-			else
-				filler.fillFromNBT(nbt, getKey(i), existing.get(i));
 		}
+	}
+
+	@Override
+	public boolean isValid(NBTTagCompound nbt, U existing)
+	{
+		return true;
 	}
 }

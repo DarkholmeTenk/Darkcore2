@@ -1,6 +1,7 @@
 package io.darkcraft.darkcore.nbt.impl.wrappers.minecraft;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
 import io.darkcraft.darkcore.nbt.impl.mapper.helpers.ClassPartialMapper;
@@ -16,5 +17,14 @@ public final class MinecraftWrapper
 			.register(FluidStack.class,
 					(NBTObjReader<FluidStack>) FluidStack::loadFluidStackFromNBT,
 					(NBTObjWriter<FluidStack>) (nbt,fs)->fs.writeToNBT(nbt))
+			.register(BlockPos.class,
+					(NBTObjReader<BlockPos>)
+							nbt->new BlockPos(nbt.getInteger("x"), nbt.getInteger("y"), nbt.getInteger("z")),
+					(NBTObjWriter<BlockPos>)
+							(nbt,v)->{
+								nbt.setInteger("x", v.getX());
+								nbt.setInteger("y", v.getY());
+								nbt.setInteger("z", v.getZ());
+							})
 			.finish();
 }

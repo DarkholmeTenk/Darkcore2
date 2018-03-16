@@ -25,4 +25,10 @@ public class ReflectionFiller<T> implements NBTObjFiller<T>
 	{
 		return new ReflectionFiller(FillingField.construct(parent, baseClass));
 	}
+
+	@Override
+	public boolean isValid(NBTTagCompound nbt, T existing)
+	{
+		return true;
+	}
 }

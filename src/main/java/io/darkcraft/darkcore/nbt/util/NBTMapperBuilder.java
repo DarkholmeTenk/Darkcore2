@@ -7,6 +7,7 @@ import java.util.List;
 import io.darkcraft.darkcore.nbt.impl.mapper.NBTMapperImpl;
 import io.darkcraft.darkcore.nbt.impl.mapper.NBTMapperViewImpl;
 import io.darkcraft.darkcore.nbt.impl.reflection.ReflectionMapper;
+import io.darkcraft.darkcore.nbt.impl.subtype.SubTypeMapper;
 import io.darkcraft.darkcore.nbt.mapper.NBTMapper;
 import io.darkcraft.darkcore.nbt.mapper.PartialMapper;
 
@@ -36,7 +37,10 @@ public class NBTMapperBuilder
 
 	public NBTMapper build()
 	{
-		partialMappers.add(new ReflectionMapper());
+		ReflectionMapper rm = new ReflectionMapper();
+		SubTypeMapper st = new SubTypeMapper(rm);
+		partialMappers.add(st);
+		partialMappers.add(rm);
 		if(viewClazz == null)
 			return new NBTMapperImpl(partialMappers);
 		else
