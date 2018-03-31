@@ -5,7 +5,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import io.darkcraft.darkcore.nbt.exception.NBTReadingException;
 import io.darkcraft.darkcore.nbt.mapper.NBTMapper;
 import io.darkcraft.darkcore.nbt.mapper.NBTReader;
+import io.darkcraft.darkcore.nbt.mapper.NBTReader.NBTObjReader;
 import io.darkcraft.darkcore.nbt.mapper.NBTWriter;
+import io.darkcraft.darkcore.nbt.mapper.NBTWriter.NBTObjWriter;
 
 /**
  * A reader/writer which can handle anything the parent mapper can, but wraps it in a simple
@@ -15,7 +17,7 @@ import io.darkcraft.darkcore.nbt.mapper.NBTWriter;
  * @author dark
  *
  */
-public class PolymorphicWrapper implements NBTWriter<Object>, NBTReader<Object>
+public class PolymorphicWrapper implements NBTObjWriter<Object>, NBTObjReader<Object>
 {
 	private static final String CLASS_KEY = "C";
 	private static final String VAL_KEY = "V";
@@ -28,12 +30,9 @@ public class PolymorphicWrapper implements NBTWriter<Object>, NBTReader<Object>
 	}
 
 	@Override
-	public Object readFromNBT(NBTTagCompound nbt, String id)
+	public Object readFromNBT(NBTTagCompound child)
 	{
-		NBTTagCompound child = nbt.getCompoundTag(id);
-		if(!child.hasKey(VAL_KEY))
-			return null;
-		String clazzName = nbt.getString(CLASS_KEY);
+		String clazzName = child.getString(CLASS_KEY);
 		try
 		{
 			Class<?> clazz = Class.forName(clazzName);
@@ -47,16 +46,11 @@ public class PolymorphicWrapper implements NBTWriter<Object>, NBTReader<Object>
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt, String key, Object value)
+	public void writeToNBT(NBTTagCompound child, Object value)
 	{
-		NBTTagCompound child = new NBTTagCompound();
-		if(value != null)
-		{
-			Class<?> clazz = value.getClass();
-			NBTWriter<Object> writer = (NBTWriter<Object>) mapper.getWriter(clazz);
-			child.setString(CLASS_KEY, clazz.getName());
-			writer.writeToNBT(child, VAL_KEY, value);
-		}
-		nbt.setTag(key, child);
+		Class<?> clazz = value.getClass();
+		NBTWriter<Object> writer = (NBTWriter<Object>) mapper.getWriter(clazz);
+		child.setString(CLASS_KEY, clazz.getName());
+		writer.writeToNBT(child, VAL_KEY, value);
 	}
 }
